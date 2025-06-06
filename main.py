@@ -5,13 +5,10 @@ import argparse
 import socket
 import threading
 import json
+import ipaddress
 from tqdm import tqdm
 from termcolor import colored
 from IPython.display import clear_output
-
-
-
-
 
 # Define a ScanThread class that will be used to check if a port is open or not
 class ScanThread(threading.Thread):
@@ -88,7 +85,6 @@ class ScanThread(threading.Thread):
                 elif "Directory listing" in response:
                     print("Vulnerability found on port {}: Directory listing enabled".format(self.port))
     
-                # Add more service signatures here
                 else:
                     print(f"Service running on port {self.port}: {response.strip()}")
                 if "SQL" in response:
@@ -103,17 +99,27 @@ class ScanThread(threading.Thread):
             # Save the open port number in self.result
             self.result = self.port
             
-           
         except:
             # If connection is unsuccessful, print in red
             print(colored(f"[-] Port {self.port} is closed.\n", "red"))
             
         
-        client.close()        
+        client.close()
+
+# Define a function for 'target' input validation
+def is_valid_target(target):
+    try:
+        ip = ipaddress.IPv4Address(target)
+        return True
+    except ipaddress.AddressValueError:
+        return False
 
 # Define a function that will be used to scan the target(s) for open ports
 def scan_targets(targets, port_range, timeout, num_threads, output_file):
     for target in targets:
+        if not is_valid_target(target):
+            print(colored(f"[!] Invalid target format: {target}, skipping.", "red"))
+            continue
         all_open_ports = []
         clear_output(wait=False)
         # Print the target being scanned in yellow
@@ -138,9 +144,8 @@ def scan_targets(targets, port_range, timeout, num_threads, output_file):
                 thread.join()
                 if thread.result is not None:
                     all_open_ports.append(thread.result)
-        # Save the results in a JSON file if output_file is specified
-        # 
-        
+        # Save the results in a JSON file if output_file is specified, otherwise results will print to terminal
+
     # Return the list of open ports
     return all_open_ports
 
