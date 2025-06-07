@@ -31,7 +31,6 @@ This project is a simple TCP port scanner designed to identify open ports on spe
 ---
 
 ## Libraries
-- Python 3  
 - Standard libraries: `socket`, `threading`, `argparse`, `json`, `ipaddress`  
 - External libraries: `tqdm` for progress bars, `termcolor` for colored terminal output, `IPython` for clearing output in Jupyter environments  
 
@@ -45,3 +44,17 @@ This project is a simple TCP port scanner designed to identify open ports on spe
 
 ```bash
 pip install -r requirements.txt
+```
+
+### Installation
+```bash
+git clone https://github.com/angelod01/port-scanner.git
+```
+
+```bash
+cd port-scanner
+```
+
+## Usage
+
+
